@@ -1,0 +1,43 @@
+no_pops = len(real_ratios)
+n = len(real_ratios[0])
+proportions = []
+for i in range(0, n):
+	temp = []			
+	for j in range(0, no_pops):
+		temp.append(real_ratios[j][i])
+	proportions.append(temp)
+colors = ['r', 'y', 'b', 'g', 'o']
+ind = np.arange(no_pops)
+width = 0.50
+height = [0 for i in range(0, no_pops)]
+for i in range(0, n):
+	if i == 0:
+		plt.bar(ind, proportions[i], width, color = colors[i])
+	else:
+		height = [sum(x) for x in zip(height, proportions[i-1])]
+		plt.bar(ind, proportions[i], width, color = colors[i], bottom=height)
+plt.yticks(np.arange(0,1,.1))
+
+
+no_pops = len(inferred_ratios)
+n = len(inferred_ratios[0])
+proportions = []
+for i in range(0, n):
+	temp = []			
+	for j in range(0, no_pops):
+		temp.append(inferred_ratios[j][i])
+	proportions.append(temp)
+colors = ['r', 'y', 'b', 'g', 'o']
+ind = np.arange(no_pops)
+width = 0.50
+height = [0 for i in range(0, no_pops)]
+for i in range(0, n):
+	if i == 0:
+		plt.bar(ind + 6, proportions[i], width, color = colors[i])
+	else:
+		height = [sum(x) for x in zip(height, proportions[i-1])]
+		plt.bar(ind + 6, proportions[i], width, color = colors[i], bottom=height)
+plt.yticks(np.arange(0,1,.1))
+
+
+plt.show()

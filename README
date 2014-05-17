@@ -1,0 +1,121 @@
+#################################################################
+Inferring Ancestral Populations Using Topic Modelling
+
+CBMF4761 Project by Alberto Benavides, Joshua Edgarton
+#################################################################
+
+------------------------------------------------------------------------
+Requirements------------------------------------------------------------
+------------------------------------------------------------------------
+- Python Version >= 2.7
+- Gensim Topic Modelling Library
+  http://radimrehurek.com/gensim/install.html
+- Numpy Library
+  http://docs.scipy.org/doc/numpy/user/install.html
+- Scipy Library
+  http://www.scipy.org/install.html
+- Matplotlib library
+  http://matplotlib.org/1.3.1/users/installing.html
+- Random and Math standard libraries
+
+Any moderately powerful computer should suffice to run our code.
+We had no problems running it (though it was less than blazing fast)
+on an old laptop with an i7 2.0Ghz processor and 8GB of RAM.
+
+------------------------------------------------------------------------
+Sample Run / Output-----------------------------------------------------
+------------------------------------------------------------------------
+
+To see a sample run from our code, just run the script 'main.py' in the
+root directory.
+By default, we have 3 ancestral populations and 4 subpopulations derived
+in different proportions from these 3.
+By default, we use 50 individuals per subpopulation.
+By default, we group all individuals in the same subpopulation into one large
+genetic document for the LDA model to train on.
+By default, the ensemble size is 100.
+
+So, just run main.py.  Assuming you have everything installed correctly as
+above, the computer will run for about a minute, print the Root Mean Squared
+Error between the actual proportions and the ones found by the LDA model.
+It will also plot them side by side for visual comparison.
+
+You can also play around with a few of the parameters by adjusting the
+values in the 'parameter.py' file
+
+------------------------------------------------------------------------
+File Descriptions-------------------------------------------------------
+------------------------------------------------------------------------
+
+parameters.py
+
+This file includes the default parameters that we use in our project
+Ensemble size controls how many weak learners we aggregated over the
+LDA model
+Cohort size controls how many individuals to simulate per subpopulation
+The ratios parameter is an nxm numpy array object where the ijth entry
+corresponds to the proportion of the jth subpopulation that is derived from
+the ith ancestral population.
+
+population_simulator.py:
+
+This class simulates marker loci data for a fixed number of individuals, 
+according to the Fisher distribution.
+Adjustable parameters are in the 'parameters.py' file
+All individuals are simulated as individual txt files in the folder that is
+named 'individuals'
+
+file_joiner.py:
+
+This file is responsible for taking the simulated data of individuals and
+turning them into documents that are usable in a Topic Modelling isntance.
+It takes in only one parameter called partition_size.  This parameter determines
+the size of each document to be passed into the LDA model later.  So, for instance,
+say you pass in a partition_size of 100.  This tells the file_joiner class to group
+the simulated individual's marker data in groups of 100 and consider those as
+documents. It will then join all the individuals according to this document size
+into one large corpus that is readily usable by the LDA modelling package Gensim.
+By default, this corpus gets output as "my_corpus.txt" in the corpus directory.
+
+ratio_inferrer.py:
+
+After simulating data, formatting it into usable documents for the LDA model, and after
+training an LDA model, we use this class to try to find a one-to-one mapping between
+the hidden topics found by the LDA model and the ones we used to generate the data.
+This class takes in the actual ratios and the inferred ratios from the LDA model and
+finds the 1-to-1 maximum likelihood mapping.  It also has some plotting capabilities
+so you can visualize side by side how the actual ratios and the ones found by
+the LDA topic model compare.
+
+test scripts:
+
+There is a directory in the root directory called test_scripts.  We ran various 
+tests to see how the LDA model changed in response to an assortment of parameter
+changes including (like cohort size, ensemble size, ensemble vs no ensemble,
+genetic document batch size, and more).  Most of the test scripts we developed
+for these purposes are housed in this directory.  In order to run these scripts, 
+you must run them from the root directory and NOT the test_scripts directory (a 
+little clunky, I know).
+
+individuals:
+
+All the simulated marker loci for the individuals we generate in the 
+population simulator class are housed here.  
+
+corpus:
+
+The output of file_joiner is placed here in this directory in a format that
+is readily usable by any LDA Topic Modelling package.
+
+
+
+
+
+
+
+
+
+
+
+
+

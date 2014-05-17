@@ -1,0 +1,76 @@
+#Necessary dependencies
+from population_simulator import population_simulator
+import numpy as np
+
+#Constants
+no_ancestral_pops = 3
+no_admixed_pops = 4
+no_loci = 5000
+freq = .002
+no_individuals = 100
+batch_size = min(no_loci, 1000)
+no_batches = no_loci / batch_size
+
+#Ratio of ancestral populations in admixed populations
+ratios1 = [0.34, 0.33, 0.32]
+ratios2 = [0.90, 0.05, 0.05]
+ratios3 = [0.10, 0.10, 0.80]
+ratios4 = [0.20, 0.40, 0.40]
+ratios = np.matrix([ratios1, ratios2, ratios3, ratios4]).T
+
+#Get the allele frequencies for ancestral populations
+simulator = population_simulator()
+ancestral_pops = np.zeros((no_ancestral_pops, no_loci))
+for i in xrange(no_ancestral_pops):
+	ancestral_pops[i,:] = simulator.generate_ancestral_allele_freqs(no_loci, 1 / freq)
+print('Ancestral populations generated')
+
+#Generate cohorts of individuals from each admixed population
+for i in xrange(no_admixed_pops):
+	pops = simulator.generate_admixed_allele_freqs(ancestral_pops, ratios[:,i])
+	k = 0
+	indices = [t for t in range(batch_size)] 
+	for j in range(no_batches):
+		k = j
+		ix = np.array(indices) + k*batch_size
+		simulator.generate_cohort(no_individuals, pops[ix[0]:ix[len(ix)-1]], i, k*batch_size)
+print('Cohorts drawn from population densities')
+
+
+
+
+
+
+from population_simulator import population_simulator
+import numpy as np
+ratios1 = [0.34, 0.33, 0.32]
+ratios2 = [0.90, 0.05, 0.05]
+ratios3 = [0.10, 0.10, 0.80]
+ratios4 = [0.20, 0.40, 0.40]
+ratios = np.matrix([ratios1, ratios2, ratios3, ratios4]).T
+simulator = population_simulator()
+simulator.set_population_ratios(ratios)
+simulator.generate_genomes()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

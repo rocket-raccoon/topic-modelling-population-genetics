@@ -1,0 +1,27 @@
+#Necessary imports
+from gensim import corpora, models, similarities
+from file_joiner import *
+from my_corpus import my_corpus
+
+import string
+
+#Import documents from my_corpus.txt, remove all punctuation and newline characters
+docs = [f.translate(string.maketrans("",""), string.punctuation + "\n") for f in open("corpus/my_corpus.txt")]
+
+# remove common words and tokenize
+stoplist = set('for a of the and to in'.split())
+texts = [[word for word in document.lower().split() if word not in stoplist] for document in documents]
+
+# remove words that appear only once
+all_tokens = sum(texts, [])
+tokens_once = set(word for word in set(all_tokens) if all_tokens.count(word) == 1)
+texts = [[word for word in text if word not in tokens_once] for text in texts]
+
+#We need to create a vectorized corpus
+dictionary = corpora.Dictionary(texts)
+corpus = [dictionary.doc2bow(text) for text in texts]
+
+#Now we can train the lda model on it
+test_lda = models.LdaModel(corpus, num_topics=5, id2word=dictionary)
+test_lda[dictionary.doc2bow(['human'])]
+

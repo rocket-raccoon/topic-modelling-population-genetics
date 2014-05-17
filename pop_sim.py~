@@ -1,0 +1,41 @@
+import random, math
+from numpy import *
+#from scipy.stat import mode
+
+def run():
+	
+    noOfSubPop = 3;
+    noOfPop = 10;
+    noOfMarkerLoci = 5000;
+    freq = .00200;
+    freqParam = 1/freq;
+    noOfIndiv = 100;
+    batchSize = min(noOfMarkerLoci, 1000);
+    NoOfBatch = noOfMarkerLoci/batchSize;
+	
+    row1=[.7,.2,.199,.5,.3,.1,.15,.1,.05,.4]
+    row2=[.2,.65,.001,.4,.6,.1,.25,.36,.6,.2]
+    row3=[.1,.15,.8,.1,.1,.8,.6,.45,.35,.4]
+    ratios=matrix([row1,row2,row3])
+    ratiosWrite = ratios.T;
+    savetxt('true.txt',ratiosWrite,delimiter=' ');
+	
+    subPops = zeros((noOfSubPop, noOfMarkerLoci));
+    for i in range(noOfSubPop):
+   		subPops[i,:] = subPopulation_simulator(noOfMarkerLoci,freqParam);
+    print('SubPopulations generated');
+	    
+	for i in range(noOfPop):
+   		pops = population_simulator(subPops, ratios[:,i])
+   		k = 0
+   		indices = [t for t in range(batchSize)] 
+   		for j in range(NoOfBatch):
+  	    	k = j
+  	     	ix=array(indices)+k*batchSize
+  	     	cohort_simulator_full(noOfIndiv, pops[ix[0]:ix[len(ix)-1]], i, k*batchSize) 
+  	
+    print('Cohorts drawn from population densities');
+
+
+
+
